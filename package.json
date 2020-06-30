@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "crypto-js": "^4.0.0",
+    "date-fn": "0.0.2",
     "express": "^4.17.1"
   }
 }

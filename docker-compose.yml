@@ -1,8 +1,16 @@
 version: '3'
 services: 
-  app: 
-    container_name: check-doker-node
+  # frond: 
+  #   container_name: check-doker-front
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfileSecound
+  #   ports:
+  #     - '3000:3000'
+  back: 
+    container_name: check-doker-backend
     restart: always
     build: .
     ports:
-      - '9091:3000'
+      - '4000:3000'
