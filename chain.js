@@ -41,8 +41,8 @@ class DoVerification {
         if(!obc_cert_no_key)
             obc = {}
 
-        // console.log(income_)
-        // console.log(nativity_)
+        console.log(income_)
+        console.log(nativity_)
 
         const finalJson = await this.buildFinalJson({income, nativity, hsc, first_graduate, community, obc})
         applicationData.verification_status = finalJson;
@@ -70,14 +70,15 @@ class DoVerification {
         // console.info('mydata', JSON.parse(data))
         // console.info('address', JSON.parse(data).address)
 
-        let NativityData = result
+        let NativityData = result;
+        NativityData.NATIONALITY = 'Indian';
+        NativityData.NATIVITY = 'Tamil Nadu';
         const checkKeys = ['NAME', 'NATIONALITY', 'NATIVITY', 'STUDENT_STUDIED', 'DISTRICT', 'STATE', 'PARENT_NAME'] 
         const verifyResult = await this.compare(checkKeys, applicationData, NativityData, 'nativity')
-        verifyResult.date_created = "03-01-03"
-
+        verifyResult.Created_at = applicationData.Created_at
+        
         // return verifyResult
-        const nativity_cert_key = `${nativity_cert_no}_verify`
-        return { [nativity_cert_key]:verifyResult }
+        return { [nativity_cert_no]:verifyResult }
     }
 
     async verifyIncome(ctx, applicationData) {
@@ -92,11 +93,10 @@ class DoVerification {
         let incomeData = result
         const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income')
-        verifyResult.date_created = "03-01-03"
+        verifyResult.Created_at = applicationData.Created_at
         // return verifyResult
 
-        const income_cert_key = `${income_cert_no}_income`
-        return { [income_cert_key]:verifyResult }
+        return { [income_cert_no]:verifyResult }
         // console.log(verifyResult)
     }
 
@@ -109,13 +109,12 @@ class DoVerification {
         const CC_NAME = "firstgraduate"
         let result = await checkAvailability(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
+        const checkKeys = ['NAME','PARENT_NAME']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
-        verifyResult.date_created = "03-01-03"
+        verifyResult.Created_at = applicationData.Created_at
         // return verifyResult
 
-        const first_graduate_cert_key = `${first_graduate_cert_no}_first_graduate`
-        return { [first_graduate_cert_key]:verifyResult }
+        return { [first_graduate_cert_no]:verifyResult }
     }
 
     async verifyCommunity(ctx, applicationData) {
@@ -127,32 +126,33 @@ class DoVerification {
         const CC_NAME = "community"
         let result = await checkAvailability(community_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
+        const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'community')
-        verifyResult.date_created = "03-01-03"
+        verifyResult.Created_at = applicationData.Created_at
         // return verifyResult
 
-        const community_cert_key = `${community_cert_no}_community`
-        return { [community_cert_key]:verifyResult }
+        return { [community_cert_no]:verifyResult }
     }
 
     async verifyOBC(ctx, applicationData) {
-        return {}
+        try{
         console.info('init verifyOBC');
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'community');
-        const obc_cert_no = `${cert.CERTIFICATE_NUMBER}_community`
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'obc');
+        const obc_cert_no = `${cert.CERTIFICATE_NUMBER}_obc`
         console.log(obc_cert_no)
 
-        const CC_NAME = "community"
+        const CC_NAME = "obc"
         let result = await checkAvailability(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
+        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'obc')
-        verifyResult.date_created = "03-01-03"
+        verifyResult.Created_at = applicationData.Created_at
         // return verifyResult
-
-        const obc_cert_key = `${obc_cert_no}_obc`
-        return { [obc_cert_key]:verifyResult }
+        return { [obc_cert_no]:verifyResult }
+        }
+        catch(e){
+            return {}
+        }
     }
 
     async verifyHSC(ctx, applicationData) {
@@ -165,13 +165,14 @@ class DoVerification {
         const CC_NAME = "hsc"
         let result = await checkAvailability(hsc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
+        const checkKeys = ['ROLLNO', 'DOB', 'COMMUNITY', 'RELIGION', 
+        'GROUP_CODE', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED', 'MATHS_MARKS_OBTAINED']
+
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'hsc')
-        verifyResult.date_created = "03-01-03"
+        verifyResult.Created_at = applicationData.Created_at
         // return verifyResult
 
-        const hsc_cert_key = `${hsc_cert_no}_hsc`
-        return { [hsc_cert_key]:verifyResult }
+        return { [hsc_cert_no]:verifyResult }
     }
 
 
@@ -190,7 +191,8 @@ class DoVerification {
                 (checkKey === 'PARENT_NAME') ? incomeDataKey = 'name':''; 
             }
             else if(from === 'nativity'){
-
+                // fatherhubandname, mothersname
+                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'mothersname':''; 
             }
 
             const incomeValue = incomeData[incomeDataKey];
@@ -234,7 +236,7 @@ class DoVerification {
                 verified_flag = 'amber'
                 finalStatus.forEach((obj, index) => {
                     if (obj.Verification_result === 'failed')
-                        remark += `${key} ${obj.verify} application not match`
+                        remark += `${key} doesn’t match against ${obj.verify} Certificate, `
                 });
                 verification_remarks = remark;
             }
@@ -346,6 +348,7 @@ const application_data = {
     "MATHS_PHY_CHEM_MARKS_OBTAINED": "240",
     "PRACTICAL_I_MARKS_OBTAINED": "90",
     "PRACTICAL_II_MARKS_OBTAINED": "90",
-    "request_id": "001"
+    "request_id": "001",
+    "Created_at":"03-01-02"
 }
 result.Verification('ctx', JSON.stringify(application_data))
