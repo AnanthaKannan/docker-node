@@ -21,6 +21,10 @@ function checkAvailability(){
     }
 }
 
+function incomeFn(app){
+    const data = []
+}
+
 module.exports ={
     checkAvailability
 }
