@@ -1,4 +1,6 @@
-const { checkAvailability } = require('./myfn')
+// @ts-check
+
+const datafn = require('./myfn')
 
 class DoVerification {
 
@@ -41,29 +43,42 @@ class DoVerification {
         if(!obc_cert_no_key)
             obc = {}
 
-        console.log(income_)
-        console.log(nativity_)
+        // console.log('income_',income_)
+        // console.log('nativity_', nativity_)
 
         const finalJson = await this.buildFinalJson({income, nativity, hsc, first_graduate, community, obc})
         applicationData.verification_status = finalJson;
+
+        applicationData.Created_at = {
+            'income_certificate_Created_at': income && income.Created_at,
+            'nativity_certificate_Created_at': nativity && nativity.Created_at,
+            'community_certificate_Created_at': community && community.Created_at,
+            'OBC_certificate_Created_at': obc && obc.Created_at,
+            'first_graduate_certificate_Created_at': first_graduate && first_graduate.Created_at,
+            'HSC_certificate_Created_at': hsc && hsc.Created_at
+        }
+
+        // console.log('Created_at', applicationData.Created_at)
+
         let APPLICATION_NUMBER = applicationData.APPLICATION_NUMBER
         applicationData = { [APPLICATION_NUMBER]: applicationData }
         // console.log(finalJson)
         const finalData = [applicationData, income_, nativity_, hsc_, first_graduate_, community_, obc_]
-        console.log(finalData)
-        return JSON.stringify(finalData)
+        // console.log(finalData)
+        return JSON.stringify(finalData) 
     }
 
 
     async verifyNativity(ctx, applicationData) {
+        try{
         console.info('init verifyNativity');
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'nativity');
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'nativity_certificate');
         const nativity_cert_no = `${cert.CERTIFICATE_NUMBER}_nativity`
         console.log(nativity_cert_no)
         const CC_NAME = "nativity"
         // let results = await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
      
-        let result = await checkAvailability(nativity_cert_no)
+        let result = await datafn.nativity(nativity_cert_no)
         // let json = JSON.stringify(results.payload);
         // let bufferOriginal = Buffer.from(JSON.parse(json).data);
         // let data = bufferOriginal.toString('utf8');
@@ -75,104 +90,134 @@ class DoVerification {
         NativityData.NATIVITY = 'Tamil Nadu';
         const checkKeys = ['NAME', 'NATIONALITY', 'NATIVITY', 'STUDENT_STUDIED', 'DISTRICT', 'STATE', 'PARENT_NAME'] 
         const verifyResult = await this.compare(checkKeys, applicationData, NativityData, 'nativity')
-        verifyResult.Created_at = applicationData.Created_at
+        verifyResult.Created_at = NativityData.Created_at;
         
+
         // return verifyResult
         return { [nativity_cert_no]:verifyResult }
+        }
+        catch(e){
+            console.log(e)
+            return {}
+        }
     }
 
     async verifyIncome(ctx, applicationData) {
+        try{
         console.info('init verifyIncome');
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'income');
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'income');
         const income_cert_no = `${cert.CERTIFICATE_NUMBER}_income`
         console.log(income_cert_no)
 
         const CC_NAME = "income"
         // let results = await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
-        let result = await checkAvailability(income_cert_no)
+        let result = await datafn.income(income_cert_no)
         let incomeData = result
         const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income')
-        verifyResult.Created_at = applicationData.Created_at
+        verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
 
         return { [income_cert_no]:verifyResult }
         // console.log(verifyResult)
+    }   
+    catch(e){
+                console.log(e)
+                return {}
+            }
     }
 
     async verifyFirstGraduate(ctx, applicationData) {
+        try{
         console.info('init verifyFirstGraduate');
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'firstgraduate');
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'NoGraduate Certificate');
         const first_graduate_cert_no = `${cert.CERTIFICATE_NUMBER}_firstgraduate`
         console.log(first_graduate_cert_no)
         // console.info('data', applicationData)
         const CC_NAME = "firstgraduate"
-        let result = await checkAvailability(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
+        let result = await datafn.first_graduate(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         const checkKeys = ['NAME','PARENT_NAME']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
-        verifyResult.Created_at = applicationData.Created_at
+        verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
 
         return { [first_graduate_cert_no]:verifyResult }
+    }   
+    catch(e){
+                console.log(e)
+                return {}
+            }
     }
 
     async verifyCommunity(ctx, applicationData) {
+        try{
         console.info('init verifyCommunity');
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'community');
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'community_certificate');
         const community_cert_no = `${cert.CERTIFICATE_NUMBER}_community`
         console.log(community_cert_no)
         // console.info('data', applicationData)
         const CC_NAME = "community"
-        let result = await checkAvailability(community_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
+        let result = await datafn.community(community_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'community')
-        verifyResult.Created_at = applicationData.Created_at
+        verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
 
         return { [community_cert_no]:verifyResult }
+    }   
+    catch(e){
+                console.log(e)
+                return {}
+            }
     }
 
     async verifyOBC(ctx, applicationData) {
         try{
         console.info('init verifyOBC');
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'obc');
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'OBC_certificate');
         const obc_cert_no = `${cert.CERTIFICATE_NUMBER}_obc`
         console.log(obc_cert_no)
 
         const CC_NAME = "obc"
-        let result = await checkAvailability(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
+        let result = await datafn.obc(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'obc')
-        verifyResult.Created_at = applicationData.Created_at
+        verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
         return { [obc_cert_no]:verifyResult }
         }
         catch(e){
+            console.log(e)
             return {}
         }
     }
 
     async verifyHSC(ctx, applicationData) {
-
-        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_TYPE === 'hsc');
+    try{
+        let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'hsc');
         const hsc_cert_no = `${cert.CERTIFICATE_NUMBER}_hsc`
         console.log(hsc_cert_no)
         
         console.info('init verifyHSC');
         const CC_NAME = "hsc"
-        let result = await checkAvailability(hsc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
+        let result = await datafn.hsc(hsc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         const checkKeys = ['ROLLNO', 'DOB', 'COMMUNITY', 'RELIGION', 
         'GROUP_CODE', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED', 'MATHS_MARKS_OBTAINED']
 
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'hsc')
-        verifyResult.Created_at = applicationData.Created_at
+        verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
 
         return { [hsc_cert_no]:verifyResult }
+    }   
+    catch(e){
+                console.log(e)
+                return {}
+            }
     }
 
 
@@ -187,12 +232,34 @@ class DoVerification {
 
             // #nativity #income
             // key change in income
-            if(from === 'income'){
-                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'name':''; 
+            if (from === 'income') {
+                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
+                (checkKey === 'PARENT_OCCUPATION') ? incomeDataKey = 'OCCUPATION': '';
+                (checkKey === 'ANNUAL_INCOME') ? incomeDataKey = 'ANNUALINCOME': '';
+            } 
+            else if (from === 'nativity') {
+             // fatherhubandname, mothersname
+             (checkKey === 'NAME') ? incomeDataKey = 'APPLICANTNAME': '';
+             (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
             }
-            else if(from === 'nativity'){
-                // fatherhubandname, mothersname
-                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'mothersname':''; 
+
+            else if (from === 'first_graduate') {
+                (checkKey === 'NAME') ? incomeDataKey = 'APPLICANTNAME': '';
+                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
+            }
+
+            else if (from === 'hsc') {
+                (checkKey === 'COMMUNITY') ? incomeDataKey = 'Community': '';
+                (checkKey === 'RELIGION') ? incomeDataKey = 'Religion': '';
+                (checkKey === 'GROUP_CODE') ? incomeDataKey = 'group_code': '';
+                (checkKey === 'PHYSICS_MARKS_OBTAINED') ? incomeDataKey = 'physics': '';
+                (checkKey === 'CHEMISTRY_MARKS_OBTAINED') ? incomeDataKey = 'chemistry': '';
+                (checkKey === 'MATHS_MARKS_OBTAINED') ? incomeDataKey = 'Maths': '';
+            }
+
+             else if (from === 'community' || from === 'obc') {
+                (checkKey === 'NAME') ? incomeDataKey = 'APPLICANTNAME': '';
+                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
             }
 
             const incomeValue = incomeData[incomeDataKey];
@@ -213,9 +280,10 @@ class DoVerification {
 
     async buildFinalJson(allVerifyResult) {
 
+        // if you are add the data here, the you should add the condition in compare with bellow, otherwise throw error
         const verify = ['NAME','PARENT_NAME', 'DISTRICT', 'STATE', 
         'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'NATIVITY', 'GENDER', 'NATIONALITY', 
-        'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE']
+        'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE', 'MATHS_MARKS_OBTAINED']
 
         let verification_status = [];
         verify.forEach((key) => {
@@ -284,71 +352,22 @@ class DoVerification {
         if(key === 'COMMUNITY') return [community_];
         if(key === 'HSC_REGISTER_NO') return [hsc_];
         if(key === 'GROUP_CODE') return [hsc_];
+        if(key === 'MATHS_MARKS_OBTAINED') return [hsc_]
         
     }
 }
 
 
-
+async function callData(){
+    console.log('eeeeeeee')
 const result = new DoVerification()
-const application_data = {
-    "APPLICATION_NUMBER": "1234",
-    "cert": [{
-        "CERTIFICATE_TYPE": "income",
-        "CERTIFICATE_NUMBER": "TN1234"
-    },
-    {
-        "CERTIFICATE_TYPE": "community",
-        "CERTIFICATE_NUMBER": "TN7890"
-    },
-    {
-        "CERTIFICATE_TYPE": "firstgraduate",
-        "CERTIFICATE_NUMBER": "TN7890"
-    },
-    {
-        "CERTIFICATE_TYPE": "hsc",
-        "CERTIFICATE_NUMBER": "TN7890"
-    },
-    {
-        "CERTIFICATE_TYPE": "nativity",
-        "CERTIFICATE_NUMBER": "TN45678"
-    }],
-    "NAME": "abc",
-    "PARENT_NAME": "abc",
-    "PERMANENT_ADDRESS": "xyz",
-    "DISTRICT": "chennai",
-    "STATE": "chennai",
-    "PINCODE": 600091,
-    "CIVIC_STATUS": "en",
-    "NATIVE_DISTRICT": "chennai",
-    "DOB": "YYYY-MM-DD",
-    "GENDER": "male",
-    "NATIONALITY": "Indian",
-    "NATIVITY": "TN",
-    "RELIGION": "H/M/C",
-    "COMMUNITY": "BC",
-    "CASTE": "gja",
-    "AADHAR": "dav5465435",
-    "MOTHER_TONGUE": "jhacv",
-    "ELIGIBILITY_TYPE": "bhba42",
-    "PARENT_OCCUPATION": "sbhjvbs",
-    "ANNUAL_INCOME": "1000000",
-    "QUALIFYING_EXAM": "vdhjva",
-    "NAME_OF_BOARD": "vjadvc",
-    "HSC_REGISTER_NO": "gd3663",
-    "QUALIFIED_YEAR": "2020",
-    "HSC_GROUP": "gaad",
-    "GROUP_CODE": "991",
-    "MEDIUM_OF_INSTRUCTION": "en",
-    "MATHS_MARKS_OBTAINED": "80",
-    "PHYSICS_MARKS_OBTAINED": "80",
-    "CHEMISTRY_MARKS_OBTAINED": "80",
-    "OPTIONAL_MARKS_OBTAINED": "90",
-    "THEORY_MARKS_OBTAINED": "80",
-    "MATHS_PHY_CHEM_MARKS_OBTAINED": "240",
-    "PRACTICAL_I_MARKS_OBTAINED": "90",
-    "PRACTICAL_II_MARKS_OBTAINED": "90",
-    "request_id": "001",
-    "Created_at":"03-01-02"
+const application_data = datafn.applicationData()
+
+ const retdata = await result.Verification('ctx', JSON.stringify(application_data))
+
+return JSON.parse(retdata) 
 }
-result.Verification('ctx', JSON.stringify(application_data))
+
+module.exports = {
+    callData
+}
