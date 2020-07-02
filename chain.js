@@ -88,7 +88,8 @@ class DoVerification {
         let NativityData = result;
         NativityData.NATIONALITY = 'Indian';
         NativityData.NATIVITY = 'Tamil Nadu';
-        const checkKeys = ['NAME', 'NATIONALITY', 'NATIVITY', 'STUDENT_STUDIED', 'DISTRICT', 'STATE', 'PARENT_NAME'] 
+        const checkKeys = ['NAME', 'NATIONALITY', 'NATIVITY', 'STUDENT_STUDIED', 'DISTRICT', 'STATE', 
+        'PARENT_NAME', 'PINCODE'] 
         const verifyResult = await this.compare(checkKeys, applicationData, NativityData, 'nativity')
         verifyResult.Created_at = NativityData.Created_at;
         
@@ -120,7 +121,7 @@ class DoVerification {
         // let results = await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let result = await datafn.income(income_cert_no)
         let incomeData = result
-        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME']
+        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'PINCODE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -144,7 +145,7 @@ class DoVerification {
         const CC_NAME = "firstgraduate"
         let result = await datafn.first_graduate(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['NAME','PARENT_NAME']
+        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -174,7 +175,7 @@ class DoVerification {
         const CC_NAME = "community"
         let result = await datafn.community(community_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE']
+        const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'community')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -197,7 +198,7 @@ class DoVerification {
         const CC_NAME = "obc"
         let result = await datafn.obc(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE']
+        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'obc')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -282,7 +283,7 @@ class DoVerification {
             if (!incomeValue || !applicationValue)
                 status[checkKey] = failed
             else {
-                if (incomeValue.trim().toLowerCase() === applicationValue.trim().toLowerCase())
+                if (incomeValue.toString().trim().toLowerCase() === applicationValue.toString().trim().toLowerCase())
                     status[checkKey] = success
                 else
                     status[checkKey] = failed
@@ -298,7 +299,7 @@ class DoVerification {
         const verify = ['NAME','PARENT_NAME', 'DISTRICT', 'STATE', 
         'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'NATIVITY', 'GENDER', 'NATIONALITY', 
         'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE', 
-        
+        'PINCODE', 'DOB', 'RELIGION',
         'MATHS_MARKS_OBTAINED', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED']
 
         let verification_status = [];
@@ -371,6 +372,9 @@ class DoVerification {
         if(key === 'MATHS_MARKS_OBTAINED') return [hsc_]
         if(key === 'PHYSICS_MARKS_OBTAINED') return [hsc_]
         if(key === 'CHEMISTRY_MARKS_OBTAINED') return [hsc_]
+        if(key === 'DOB') return [hsc_]
+        if(key === 'PINCODE') return [income_, nativity_, first_graduate_, obc_, community_]
+        if(key === 'RELIGION') return [hsc_, obc_, community_]
         
     }
 }

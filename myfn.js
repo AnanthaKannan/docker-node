@@ -98,7 +98,7 @@ function nativity(nativity_cert_no) {
         VILLTOWN: 'Theni',
         TALUK: 'Aundipatti',
         DISTRICT: 'Theni',
-        PINCODE: '668890',
+        PINCODE: '600091',
         MOTHERNAME: 'Amma',
         NATIVITYTYPE: 'Nativity By Residence',
         FROMDATE: '2004-04-07',
