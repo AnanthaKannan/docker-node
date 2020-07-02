@@ -58,6 +58,8 @@ function applicationData() {
         "MATHS_PHY_CHEM_MARKS_OBTAINED": "240",
         "PRACTICAL_I_MARKS_OBTAINED": "90",
         "PRACTICAL_II_MARKS_OBTAINED": "90",
+        'STUDIED_IN_TAMILNADU':'yes',
+        'FIRST_GRADUATE_SCHOLARSHIP':'No',
         "request_id": "001"
 
     }
@@ -273,6 +275,7 @@ function hsc(nativity_cert_no) {
         "physics": '80',
         "chemistry": '50',
         "docType": "hsc",
+        CERTIFICATENO: 'TN1234',
         "Created_at": ''
     }
 }

@@ -93,6 +93,13 @@ class DoVerification {
         verifyResult.Created_at = NativityData.Created_at;
         
 
+        // only for this exception
+        verifyResult.STUDIED_IN_TAMILNADU = { Verification_result: 'success' }
+        const STUDIED_IN_TAMILNADU = applicationData.STUDIED_IN_TAMILNADU;
+        if(!STUDIED_IN_TAMILNADU || (STUDIED_IN_TAMILNADU && STUDIED_IN_TAMILNADU.trim().toLowerCase() === 'no')){
+                verifyResult.STUDIED_IN_TAMILNADU = { Verification_result: 'failed' }
+             }
+
         // return verifyResult
         return { [nativity_cert_no]:verifyResult }
         }
@@ -141,6 +148,13 @@ class DoVerification {
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
+
+        // exception case
+        verifyResult.FIRST_GRADUATE_SCHOLARSHIP = { Verification_result: 'success' }
+        const FIRST_GRADUATE_SCHOLARSHIP = applicationData.FIRST_GRADUATE_SCHOLARSHIP;
+        if(!FIRST_GRADUATE_SCHOLARSHIP || (FIRST_GRADUATE_SCHOLARSHIP && FIRST_GRADUATE_SCHOLARSHIP.trim().toLowerCase() === 'no')){
+                verifyResult.FIRST_GRADUATE_SCHOLARSHIP = { Verification_result: 'failed' }
+             }
 
         return { [first_graduate_cert_no]:verifyResult }
     }   
@@ -283,7 +297,9 @@ class DoVerification {
         // if you are add the data here, the you should add the condition in compare with bellow, otherwise throw error
         const verify = ['NAME','PARENT_NAME', 'DISTRICT', 'STATE', 
         'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'NATIVITY', 'GENDER', 'NATIONALITY', 
-        'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE', 'MATHS_MARKS_OBTAINED']
+        'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE', 
+        
+        'MATHS_MARKS_OBTAINED', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED']
 
         let verification_status = [];
         verify.forEach((key) => {
@@ -353,6 +369,8 @@ class DoVerification {
         if(key === 'HSC_REGISTER_NO') return [hsc_];
         if(key === 'GROUP_CODE') return [hsc_];
         if(key === 'MATHS_MARKS_OBTAINED') return [hsc_]
+        if(key === 'PHYSICS_MARKS_OBTAINED') return [hsc_]
+        if(key === 'CHEMISTRY_MARKS_OBTAINED') return [hsc_]
         
     }
 }
