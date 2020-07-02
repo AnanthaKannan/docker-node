@@ -47,8 +47,14 @@ class DoVerification {
         // console.log('nativity_', nativity_)
 
         const finalJson = await this.buildFinalJson({income, nativity, hsc, first_graduate, community, obc})
+        //   make as empty object
+        let remarks = {'verification_remarks': null, 'verified_flag':null}
+        let empytObj = [{'PERMANENT_ADDRESS':remarks},{'CIVIC_STATUS':remarks},{'AADHAR':remarks} ]
+        finalJson.push(...empytObj)
+        
         applicationData.verification_status = finalJson;
-
+        
+    
         applicationData.Created_at = {
             'income_certificate_Created_at': income && income.Created_at,
             'nativity_certificate_Created_at': nativity && nativity.Created_at,
@@ -61,6 +67,7 @@ class DoVerification {
         // console.log('Created_at', applicationData.Created_at)
 
         let APPLICATION_NUMBER = applicationData.APPLICATION_NUMBER
+  
         applicationData = { [APPLICATION_NUMBER]: applicationData }
         // console.log(finalJson)
         const finalData = [applicationData, income_, nativity_, hsc_, first_graduate_, community_, obc_]
