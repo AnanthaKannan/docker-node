@@ -363,6 +363,9 @@ class DoVerification {
         const obc_ = { verify: 'obc' }
         obc_.Verification_result = obc[key] ? obc[key]['Verification_result'] : 'failed';
 
+        // check obc or community
+        
+
         if(key === 'NAME') return [community_, nativity_, first_graduate_, obc_, hsc_];
         if(key === 'PARENT_NAME') return [income_, community_, nativity_, first_graduate_, obc_];
         if(key === 'DISTRICT') return [community_, nativity_, obc_];
@@ -385,6 +388,7 @@ class DoVerification {
         
     }
 }
+
 
 
 async function callData(){
