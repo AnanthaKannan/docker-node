@@ -51,7 +51,7 @@ class DoVerification {
         let remarks = {'verification_remarks': null, 'verified_flag':null}
         let empytObj = [{'PERMANENT_ADDRESS':remarks},{'CIVIC_STATUS':remarks},{'AADHAR':remarks} ]
         finalJson.push(...empytObj)
-        
+
         applicationData.verification_status = finalJson;
         
     
@@ -227,7 +227,7 @@ class DoVerification {
         const CC_NAME = "hsc"
         let result = await datafn.hsc(hsc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['ROLLNO', 'DOB', 'COMMUNITY', 'RELIGION', 
+        const checkKeys = ['ROLLNO', 'DOB', 'COMMUNITY', 'RELIGION', 'HSC_REGISTER_NO',
         'GROUP_CODE', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED', 'MATHS_MARKS_OBTAINED']
 
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'hsc')
@@ -346,22 +346,22 @@ class DoVerification {
      compareWith({income, nativity, hsc, first_graduate, community, obc}, key){
 
         const income_ = { verify: 'income' }
-        income_.Verification_result = income[key] ? income[key]['Verification_result']: 'success';
+        income_.Verification_result = income[key] ? income[key]['Verification_result']: 'failed';
 
         const nativity_ = { verify: 'nativity' }
-        nativity_.Verification_result = nativity[key] ? nativity[key]['Verification_result'] : 'success';
+        nativity_.Verification_result = nativity[key] ? nativity[key]['Verification_result'] : 'failed';
         
         const hsc_ = { verify: 'hsc' }
-        hsc_.Verification_result = hsc[key] ? hsc[key]['Verification_result'] : 'success';
+        hsc_.Verification_result = hsc[key] ? hsc[key]['Verification_result'] : 'failed';
 
         const first_graduate_ = { verify: 'first_graduate' }
-        first_graduate_.Verification_result = first_graduate[key] ? first_graduate[key]['Verification_result'] : 'success';
+        first_graduate_.Verification_result = first_graduate[key] ? first_graduate[key]['Verification_result'] : 'failed';
 
         const community_ = { verify: 'community' }
-        community_.Verification_result = community[key] ? community[key]['Verification_result'] : 'success';
+        community_.Verification_result = community[key] ? community[key]['Verification_result'] : 'failed';
 
         const obc_ = { verify: 'obc' }
-        obc_.Verification_result = obc[key] ? obc[key]['Verification_result'] : 'success';
+        obc_.Verification_result = obc[key] ? obc[key]['Verification_result'] : 'failed';
 
         if(key === 'NAME') return [community_, nativity_, first_graduate_, obc_, hsc_];
         if(key === 'PARENT_NAME') return [income_, community_, nativity_, first_graduate_, obc_];

@@ -18,10 +18,10 @@ function applicationData() {
                 "CERTIFICATE_NAME": "OBC_certificate",
                 "CERTIFICATE_NUMBER": "KL-10024"
             },
-            {
-                "CERTIFICATE_NAME": "hsc",
-                "CERTIFICATE_NUMBER": "TN1234"
-            }
+            // {
+            //     "CERTIFICATE_NAME": "hsc",
+            //     "CERTIFICATE_NUMBER": "TN1234"
+            // }
         ],
         "NAME": "Raj",
         "PARENT_NAME": "abc",
@@ -216,7 +216,7 @@ function first_graduate(nativity_cert_no) {
 function obc(nativity_cert_no) {
     return {
         SERVICENAME: 'OBC Certificate',
-        APPLICANTNAME: 'Kalki',
+        APPLICANTNAME: 'Raj',
         FATHERHUSNAME: 'Sak',
         ADDRESS: 'Street -Bvbw , Door/Building No.-ef',
         VILLTOWN: 'Salem',
@@ -264,6 +264,7 @@ function community(nativity_cert_no) {
 }
 
 function hsc(nativity_cert_no) {
+    // return {}
     return {
         "Name": '',
         "ROLLNO": '',
