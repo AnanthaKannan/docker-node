@@ -187,6 +187,7 @@ class DoVerification {
         let result = await datafn.community(community_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE']
+         
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'community')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -210,6 +211,13 @@ class DoVerification {
         let result = await datafn.obc(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
+
+        // if the community is obc, then only need to check the OBC data is avaliable or not 
+        if(applicationData.COMMUNITY && applicationData.COMMUNITY.trim().toLowerCase()  === 'obc'){
+            let keys = Object.keys(incomeData);
+            if(keys.length > 0)
+                incomeData.COMMUNITY = 'obc'
+        }
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'obc')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult

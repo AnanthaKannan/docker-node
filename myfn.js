@@ -8,18 +8,18 @@ function applicationData() {
                 "CERTIFICATE_NAME": "NoGraduate Certificate",
                 "CERTIFICATE_NUMBER": "TN-10001"
             }, 
-            {
-                "CERTIFICATE_NAME": "community_certificate",
-                "CERTIFICATE_NUMBER": "TN-10011"
-            },
+            // {
+            //     "CERTIFICATE_NAME": "community_certificate",
+            //     "CERTIFICATE_NUMBER": "TN-10011"
+            // },
              {
                 "CERTIFICATE_NAME": "nativity_certificate",
                 "CERTIFICATE_NUMBER": "TN-10016"
             },
-            // {
-            //     "CERTIFICATE_NAME": "OBC_certificate",
-            //     "CERTIFICATE_NUMBER": "KL-10024"
-            // },
+            {
+                "CERTIFICATE_NAME": "OBC_certificate",
+                "CERTIFICATE_NUMBER": "KL-10024"
+            },
             {
                 "CERTIFICATE_NAME": "hsc",
                 "CERTIFICATE_NUMBER": "TN1234"
@@ -38,7 +38,7 @@ function applicationData() {
         "NATIONALITY": "Indian",
         "NATIVITY": "TN",
         "RELIGION": "H/M/C",
-        "COMMUNITY": "BC",
+        "COMMUNITY": "obc",
         "CASTE": "gja",
         "AADHAR": "dav5465435",
         "MOTHER_TONGUE": "jhacv",
