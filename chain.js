@@ -45,15 +45,19 @@ class DoVerification {
 
         // console.log('income_',income_)
         // console.log('nativity_', nativity_)
+        let isObc = true;
+        try{
+            let cert = applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'OBC_certificate');
+            const cert_no = cert.CERTIFICATE_NUMBER;
+            console.log(cert_no)
+        }
+        catch(e){
+            isObc = false
+        }
 
-        const finalJson = await this.buildFinalJson({income, nativity, hsc, first_graduate, community, obc})
-        //   make as empty object
-        let remarks = {'verification_remarks': null, 'verified_flag':null}
-        let empytObj = [{'PERMANENT_ADDRESS':remarks},{'CIVIC_STATUS':remarks},{'AADHAR':remarks} ]
-        finalJson.push(...empytObj)
+        const finalJson = await this.buildFinalJson({income, nativity, hsc, first_graduate, community, obc, isObc})
 
         applicationData.verification_status = finalJson;
-        
     
         applicationData.Created_at = {
             'income_certificate_Created_at': income && income.Created_at,
@@ -255,33 +259,33 @@ class DoVerification {
             // #nativity #income
             // key change in income
             if (from === 'income') {
-                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
-                (checkKey === 'PARENT_OCCUPATION') ? incomeDataKey = 'OCCUPATION': '';
-                (checkKey === 'ANNUAL_INCOME') ? incomeDataKey = 'ANNUALINCOME': '';
+                if(checkKey === 'PARENT_NAME') incomeDataKey = 'APPLICANTNAME';
+                else if(checkKey === 'PARENT_OCCUPATION') incomeDataKey = 'OCCUPATION';
+                else if(checkKey === 'ANNUAL_INCOME') incomeDataKey = 'ANNUALINCOME';
             } 
             else if (from === 'nativity') {
              // fatherhubandname, mothersname
-             (checkKey === 'NAME') ? incomeDataKey = 'APPLICANTNAME': '';
-             (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
+             if(checkKey === 'NAME') incomeDataKey = 'APPLICANTNAME';
+             else if(checkKey === 'PARENT_NAME') incomeDataKey = 'FATHERHUSNAME';
             }
 
             else if (from === 'first_graduate') {
-                (checkKey === 'NAME') ? incomeDataKey = 'APPLICANTNAME': '';
-                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
+                if(checkKey === 'NAME') incomeDataKey = 'APPLICANTNAME';
+                else if(checkKey === 'PARENT_NAME') incomeDataKey = 'FATHERHUSNAME';
             }
 
             else if (from === 'hsc') {
-                (checkKey === 'COMMUNITY') ? incomeDataKey = 'Community': '';
-                (checkKey === 'RELIGION') ? incomeDataKey = 'Religion': '';
-                (checkKey === 'GROUP_CODE') ? incomeDataKey = 'group_code': '';
-                (checkKey === 'PHYSICS_MARKS_OBTAINED') ? incomeDataKey = 'physics': '';
-                (checkKey === 'CHEMISTRY_MARKS_OBTAINED') ? incomeDataKey = 'chemistry': '';
-                (checkKey === 'MATHS_MARKS_OBTAINED') ? incomeDataKey = 'Maths': '';
+                if(checkKey === 'COMMUNITY') incomeDataKey = 'Community';
+                else if(checkKey === 'RELIGION') incomeDataKey = 'Religion';
+                else if(checkKey === 'GROUP_CODE') incomeDataKey = 'group_code';
+                else if(checkKey === 'PHYSICS_MARKS_OBTAINED') incomeDataKey = 'physics';
+                else if(checkKey === 'CHEMISTRY_MARKS_OBTAINED') incomeDataKey = 'chemistry';
+                else if(checkKey === 'MATHS_MARKS_OBTAINED') incomeDataKey = 'Maths';
             }
 
              else if (from === 'community' || from === 'obc') {
-                (checkKey === 'NAME') ? incomeDataKey = 'APPLICANTNAME': '';
-                (checkKey === 'PARENT_NAME') ? incomeDataKey = 'FATHERHUSNAME': '';
+                if(checkKey === 'NAME') incomeDataKey = 'APPLICANTNAME';
+                else if(checkKey === 'PARENT_NAME') incomeDataKey = 'FATHERHUSNAME';
             }
 
             const incomeValue = incomeData[incomeDataKey];
@@ -307,7 +311,8 @@ class DoVerification {
         'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'NATIVITY', 'GENDER', 'NATIONALITY', 
         'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE', 
         'PINCODE', 'DOB', 'RELIGION',
-        'MATHS_MARKS_OBTAINED', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED']
+        'MATHS_MARKS_OBTAINED', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED',
+        'PERMANENT_ADDRESS', 'CIVIC_STATUS', 'AADHAR']
 
         let verification_status = [];
         verify.forEach((key) => {
@@ -317,7 +322,10 @@ class DoVerification {
             console.log(key, finalStatus)
             let verification_remarks = "";
             let verified_flag;
-            if (finalStatus.every((obj) => obj.Verification_result === 'success') === true) {
+            if(finalStatus.length < 1){
+                verified_flag = verification_remarks = null
+            }
+            else if (finalStatus.every((obj) => obj.Verification_result === 'success') === true) {
                 verification_remarks = 'all certificate successfully matched'
                 verified_flag = 'green'
             } else if (finalStatus.every((obj) => obj.Verification_result === 'failed') === true) {
@@ -343,7 +351,7 @@ class DoVerification {
         return verification_status
     }
 
-     compareWith({income, nativity, hsc, first_graduate, community, obc}, key){
+     compareWith({income, nativity, hsc, first_graduate, community, obc, isObc}, key){
 
         const income_ = { verify: 'income' }
         income_.Verification_result = income[key] ? income[key]['Verification_result']: 'failed';
@@ -364,28 +372,32 @@ class DoVerification {
         obc_.Verification_result = obc[key] ? obc[key]['Verification_result'] : 'failed';
 
         // check obc or community
-        
+        let anyOne = community_;
+        if(isObc)
+            anyOne = obc_;
 
-        if(key === 'NAME') return [community_, nativity_, first_graduate_, obc_, hsc_];
-        if(key === 'PARENT_NAME') return [income_, community_, nativity_, first_graduate_, obc_];
-        if(key === 'DISTRICT') return [community_, nativity_, obc_];
-        if(key === 'STATE') return [nativity_];
-        if(key === 'PARENT_OCCUPATION') return [income_];
-        if(key === 'ANNUAL_INCOME') return [income_];
-        if(key === 'NATIVITY') return [nativity_];
-        if(key === 'GENDER') return [community_, hsc_];
-        if(key === 'NATIONALITY') return [nativity_];
-        if(key === 'CASTE') return [community_];
-        if(key === 'COMMUNITY') return [community_];
-        if(key === 'HSC_REGISTER_NO') return [hsc_];
-        if(key === 'GROUP_CODE') return [hsc_];
-        if(key === 'MATHS_MARKS_OBTAINED') return [hsc_]
-        if(key === 'PHYSICS_MARKS_OBTAINED') return [hsc_]
-        if(key === 'CHEMISTRY_MARKS_OBTAINED') return [hsc_]
-        if(key === 'DOB') return [hsc_]
-        if(key === 'PINCODE') return [income_, nativity_, first_graduate_, obc_, community_]
-        if(key === 'RELIGION') return [hsc_, obc_, community_]
-        
+        if(key === 'NAME') return [anyOne, nativity_, first_graduate_, hsc_];
+        else if(key === 'PARENT_NAME') return [income_, nativity_, first_graduate_, anyOne];
+        else if(key === 'DISTRICT') return [nativity_, anyOne];
+        else if(key === 'STATE') return [nativity_];
+        else if(key === 'PARENT_OCCUPATION') return [income_];
+        else if(key === 'ANNUAL_INCOME') return [income_];
+        else if(key === 'NATIVITY') return [nativity_];
+        else if(key === 'GENDER') return [anyOne, hsc_];
+        else if(key === 'NATIONALITY') return [nativity_];
+        else if(key === 'CASTE') return [anyOne];
+        else if(key === 'COMMUNITY') return [anyOne];
+        else if(key === 'HSC_REGISTER_NO') return [hsc_];
+        else if(key === 'GROUP_CODE') return [hsc_];
+        else if(key === 'MATHS_MARKS_OBTAINED') return [hsc_]
+        else if(key === 'PHYSICS_MARKS_OBTAINED') return [hsc_]
+        else if(key === 'CHEMISTRY_MARKS_OBTAINED') return [hsc_]
+        else if(key === 'DOB') return [hsc_]
+        else if(key === 'PINCODE') return [income_, nativity_, first_graduate_, anyOne]
+        else if(key === 'RELIGION') return [hsc_, anyOne]
+        else if(key === 'PERMANENT_ADDRESS') return []
+        else if(key === 'CIVIC_STATUS') return []
+        else if(key === 'AADHAR') return []
     }
 }
 

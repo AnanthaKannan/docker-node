@@ -7,10 +7,12 @@ function applicationData() {
             }, {
                 "CERTIFICATE_NAME": "NoGraduate Certificate",
                 "CERTIFICATE_NUMBER": "TN-10001"
-            }, {
+            }, 
+            {
                 "CERTIFICATE_NAME": "community_certificate",
                 "CERTIFICATE_NUMBER": "TN-10011"
-            }, {
+            },
+             {
                 "CERTIFICATE_NAME": "nativity_certificate",
                 "CERTIFICATE_NUMBER": "TN-10016"
             },
@@ -69,7 +71,7 @@ function applicationData() {
 function income(nativity_cert_no) {
     return {
         SERVICENAME: 'Income Certificate',
-        APPLICANTNAME: 'Raj',
+        APPLICANTNAME: 'abc',
         FATHERHUSNAME: 'Guru',
         ADDRESS: 'Street -Other, Door/Building No.-44',
         VILLTOWN: 'Chennai',
