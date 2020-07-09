@@ -1,6 +1,7 @@
 // @ts-check
 
 const datafn = require('./myfn')
+const DateDiff = require('date-diff');
 
 class DoVerification {
 
@@ -97,6 +98,10 @@ class DoVerification {
         // console.info('address', JSON.parse(data).address)
 
         let NativityData = result;
+
+        if(Object.keys(NativityData).length < 1)
+            return {}
+
         NativityData.NATIONALITY = 'Indian';
         NativityData.NATIVITY = 'Tamil Nadu';
         const checkKeys = ['NAME', 'NATIONALITY', 'NATIVITY', 'STUDENT_STUDIED', 'DISTRICT', 'STATE', 
@@ -132,6 +137,9 @@ class DoVerification {
         // let results = await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let result = await datafn.income(income_cert_no)
         let incomeData = result
+
+        if(Object.keys(incomeData).length < 1) return {}
+
         const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'PINCODE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income')
         verifyResult.Created_at = incomeData.Created_at
@@ -156,6 +164,7 @@ class DoVerification {
         const CC_NAME = "firstgraduate"
         let result = await datafn.first_graduate(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
+        if(Object.keys(incomeData).length < 1) return {}
         const checkKeys = ['NAME','PARENT_NAME', 'PINCODE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
         verifyResult.Created_at = incomeData.Created_at
@@ -186,6 +195,8 @@ class DoVerification {
         const CC_NAME = "community"
         let result = await datafn.community(community_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
+
+        if(Object.keys(incomeData).length < 1) return {}
         const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE']
          
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'community')
@@ -210,6 +221,7 @@ class DoVerification {
         const CC_NAME = "obc"
         let result = await datafn.obc(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
+        if(Object.keys(incomeData).length < 1) return {}
         const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
 
         // if the community is obc, then only need to check the OBC data is avaliable or not 
@@ -239,7 +251,9 @@ class DoVerification {
         const CC_NAME = "hsc"
         let result = await datafn.hsc(hsc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
-        const checkKeys = ['ROLLNO', 'DOB', 'COMMUNITY', 'RELIGION', 'HSC_REGISTER_NO',
+        if(Object.keys(incomeData).length < 1) return {}
+        const checkKeys = ['NAME', 'DOB', 'COMMUNITY', 'RELIGION', 'GENDER', 'CASTE', 'YEAR_OF_PASSING',
+        'OPTIONAL', 'QUALIFICATION_EXAMINATION', 'BOARD_OD_EXAMINATION', 
         'GROUP_CODE', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED', 'MATHS_MARKS_OBTAINED']
 
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'hsc')
@@ -258,8 +272,12 @@ class DoVerification {
 
     async compare(checkKeys, applicationData, incomeData, from) {
         let status = {}
-        const failed = { Verification_result: 'failed' }
+        let failed = { Verification_result: 'failed' }
         const success = { Verification_result: 'success' }
+        // const empty_res = { Verification_result: 'empty_res' }
+
+        // if(Object.keys(incomeData).length < 1)
+        //     failed = empty_res
 
         checkKeys.forEach((checkKey) => {
             let incomeDataKey = checkKey;
@@ -299,6 +317,7 @@ class DoVerification {
             const incomeValue = incomeData[incomeDataKey];
             const applicationValue = applicationData[checkKey];
             // console.log(checkKey, incomeValue, applicationValue)
+
             if (!incomeValue || !applicationValue)
                 status[checkKey] = failed
             else {
@@ -308,7 +327,7 @@ class DoVerification {
                     status[checkKey] = failed
             }
         })
-        // console.log(status)
+        console.log(status)
         return status
     }
 
@@ -320,7 +339,11 @@ class DoVerification {
         'CASTE', 'COMMUNITY', 'HSC_REGISTER_NO', 'GROUP_CODE', 
         'PINCODE', 'DOB', 'RELIGION',
         'MATHS_MARKS_OBTAINED', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED',
-        'PERMANENT_ADDRESS', 'CIVIC_STATUS', 'AADHAR']
+        'PERMANENT_ADDRESS', 'CIVIC_STATUS', 'AADHAR',
+        'YEAR_OF_PASSING', 'OPTIONAL', 'QUALIFICATION_EXAMINATION', 'BOARD_OD_EXAMINATION',
+        ]
+
+
 
         let verification_status = [];
         verify.forEach((key) => {
@@ -330,6 +353,7 @@ class DoVerification {
             console.log(key, finalStatus)
             let verification_remarks = "";
             let verified_flag;
+
             if(finalStatus.length < 1){
                 verified_flag = verification_remarks = null
             }
@@ -339,13 +363,20 @@ class DoVerification {
             } else if (finalStatus.every((obj) => obj.Verification_result === 'failed') === true) {
                 verification_remarks = 'all certificate are not matched'
                 verified_flag = 'red'
-            } else {
+            } 
+            else {
                 let remark = ''
                 verified_flag = 'amber'
                 finalStatus.forEach((obj, index) => {
                     if (obj.Verification_result === 'failed')
                         remark += `${key} doesn’t match against ${obj.verify} Certificate, `
+                    if (obj.Verification_result === 'empty_res')
+                        remark += `${key} data not there against ${obj.verify} Certificate, `
                 });
+
+                if (finalStatus.every((obj) => obj.Verification_result === 'empty_res') === true) 
+                    verified_flag = 'red'
+                
                 verification_remarks = remark;
             }
             verification_status.push({
@@ -363,21 +394,27 @@ class DoVerification {
 
         const income_ = { verify: 'income' }
         income_.Verification_result = income[key] ? income[key]['Verification_result']: 'failed';
+        if(Object.keys(income).length < 1) income_.Verification_result = 'empty_res'
 
         const nativity_ = { verify: 'nativity' }
         nativity_.Verification_result = nativity[key] ? nativity[key]['Verification_result'] : 'failed';
+        if(Object.keys(nativity).length < 1) nativity_.Verification_result = 'empty_res'
         
         const hsc_ = { verify: 'hsc' }
         hsc_.Verification_result = hsc[key] ? hsc[key]['Verification_result'] : 'failed';
+        if(Object.keys(hsc).length < 1) hsc_.Verification_result = 'empty_res'
 
         const first_graduate_ = { verify: 'first_graduate' }
         first_graduate_.Verification_result = first_graduate[key] ? first_graduate[key]['Verification_result'] : 'failed';
+        if(Object.keys(first_graduate).length < 1) first_graduate_.Verification_result = 'empty_res'
 
         const community_ = { verify: 'community' }
         community_.Verification_result = community[key] ? community[key]['Verification_result'] : 'failed';
+        if(Object.keys(community).length < 1) community_.Verification_result = 'empty_res'
 
         const obc_ = { verify: 'obc' }
         obc_.Verification_result = obc[key] ? obc[key]['Verification_result'] : 'failed';
+        if(Object.keys(obc).length < 1) obc_.Verification_result = 'empty_res'
 
         // check obc or community
         let anyOne = community_;
@@ -395,17 +432,22 @@ class DoVerification {
         else if(key === 'NATIONALITY') return [nativity_];
         else if(key === 'CASTE') return [anyOne];
         else if(key === 'COMMUNITY') return [anyOne];
-        else if(key === 'HSC_REGISTER_NO') return [hsc_];
-        else if(key === 'GROUP_CODE') return [hsc_];
-        else if(key === 'MATHS_MARKS_OBTAINED') return [hsc_]
-        else if(key === 'PHYSICS_MARKS_OBTAINED') return [hsc_]
-        else if(key === 'CHEMISTRY_MARKS_OBTAINED') return [hsc_]
-        else if(key === 'DOB') return [hsc_]
         else if(key === 'PINCODE') return [income_, nativity_, first_graduate_, anyOne]
         else if(key === 'RELIGION') return [hsc_, anyOne]
-        else if(key === 'PERMANENT_ADDRESS') return []
-        else if(key === 'CIVIC_STATUS') return []
-        else if(key === 'AADHAR') return []
+
+        else if(key === 'HSC_REGISTER_NO' 
+        || key === 'GROUP_CODE'
+        || key === 'MATHS_MARKS_OBTAINED'
+        || key === 'PHYSICS_MARKS_OBTAINED'
+        || key === 'CHEMISTRY_MARKS_OBTAINED'
+        || key === 'DOB'
+        || key === 'YEAR_OF_PASSING'
+        || key === 'OPTIONAL'
+        || key === 'QUALIFICATION_EXAMINATION'
+        || key === 'BOARD_OD_EXAMINATION') return [hsc_];
+
+        else if(key === 'PERMANENT_ADDRESS' || key === 'CIVIC_STATUS' || key === 'AADHAR') 
+        return []
     }
 }
 
