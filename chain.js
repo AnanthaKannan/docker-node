@@ -361,7 +361,7 @@ class DoVerification {
                 verification_remarks = 'all certificate successfully matched'
                 verified_flag = 'green'
             } else if (finalStatus.every((obj) => obj.Verification_result === 'failed') === true) {
-                verification_remarks = 'all certificate are not matched'
+                verification_remarks = 'does not match any of the verification data.'
                 verified_flag = 'red'
             } 
             else {
@@ -371,7 +371,7 @@ class DoVerification {
                     if (obj.Verification_result === 'failed')
                         remark += `${key} doesn’t match against ${obj.verify} Certificate, `
                     if (obj.Verification_result === 'empty_res')
-                        remark += `${key} data not there against ${obj.verify} Certificate, `
+                        remark += `${key} verification data could not complete hence ${obj.verify} data is not there, `
                 });
 
                 if (finalStatus.every((obj) => obj.Verification_result === 'empty_res') === true) 
