@@ -1,16 +1,14 @@
-version: '3'
+version: '2'
+
+networks:
+  test:
+
 services: 
-  # frond: 
-  #   container_name: check-doker-front
-  #   restart: always
-  #   build:
-  #     context: .
-  #     dockerfile: dockerfileSecound
-  #   ports:
-  #     - '3000:3000'
   back: 
     container_name: check-doker-backend
     restart: always
     build: .
     ports:
       - '4000:3000'
+    networks:
+      - test

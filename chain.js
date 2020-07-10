@@ -56,7 +56,7 @@ class DoVerification {
             isObc = false
         }
 
-        const finalJson = await this.buildFinalJson({income, nativity, hsc, first_graduate, community, obc, isObc})
+        const finalJson = await this.buildFinalJson({applicationData, income, nativity, hsc, first_graduate, community, obc, isObc})
 
         applicationData.verification_status = finalJson;
     
@@ -140,7 +140,7 @@ class DoVerification {
 
         if(Object.keys(incomeData).length < 1) return {}
 
-        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'PINCODE']
+        const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'DISTRICT', 'PINCODE']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -197,7 +197,7 @@ class DoVerification {
         let incomeData = result
 
         if(Object.keys(incomeData).length < 1) return {}
-        const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE']
+        const checkKeys = ['NAME', 'RELIGION', 'GENDER', 'COMMUNITY', 'DISTRICT', 'PARENT_NAME', 'CASTE', 'PINCODE']
          
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'community')
         verifyResult.Created_at = incomeData.Created_at
@@ -222,7 +222,7 @@ class DoVerification {
         let result = await datafn.obc(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         if(Object.keys(incomeData).length < 1) return {}
-        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'STATE', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
+        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
 
         // if the community is obc, then only need to check the OBC data is avaliable or not 
         if(applicationData.COMMUNITY && applicationData.COMMUNITY.trim().toLowerCase()  === 'obc'){
@@ -390,31 +390,45 @@ class DoVerification {
         return verification_status
     }
 
-     compareWith({income, nativity, hsc, first_graduate, community, obc, isObc}, key){
+     compareWith({applicationData, income, nativity, hsc, first_graduate, community, obc, isObc}, key){
+
+        
 
         const income_ = { verify: 'income' }
         income_.Verification_result = income[key] ? income[key]['Verification_result']: 'failed';
         if(Object.keys(income).length < 1) income_.Verification_result = 'empty_res'
+        if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'income'))
+            income_.Verification_result = 'success'
 
         const nativity_ = { verify: 'nativity' }
         nativity_.Verification_result = nativity[key] ? nativity[key]['Verification_result'] : 'failed';
         if(Object.keys(nativity).length < 1) nativity_.Verification_result = 'empty_res'
+        if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'nativity_certificate'))
+            nativity_.Verification_result = 'success'
         
         const hsc_ = { verify: 'hsc' }
         hsc_.Verification_result = hsc[key] ? hsc[key]['Verification_result'] : 'failed';
         if(Object.keys(hsc).length < 1) hsc_.Verification_result = 'empty_res'
+        if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'hsc'))
+            hsc_.Verification_result = 'success'
 
         const first_graduate_ = { verify: 'first_graduate' }
         first_graduate_.Verification_result = first_graduate[key] ? first_graduate[key]['Verification_result'] : 'failed';
         if(Object.keys(first_graduate).length < 1) first_graduate_.Verification_result = 'empty_res'
+        if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'NoGraduate Certificate'))
+            first_graduate_.Verification_result = 'success'
 
         const community_ = { verify: 'community' }
         community_.Verification_result = community[key] ? community[key]['Verification_result'] : 'failed';
         if(Object.keys(community).length < 1) community_.Verification_result = 'empty_res'
+        if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'community_certificate'))
+            community_.Verification_result = 'success'
 
         const obc_ = { verify: 'obc' }
         obc_.Verification_result = obc[key] ? obc[key]['Verification_result'] : 'failed';
         if(Object.keys(obc).length < 1) obc_.Verification_result = 'empty_res'
+        if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'OBC_certificate'))
+            obc_.Verification_result = 'success'
 
         // check obc or community
         let anyOne = community_;

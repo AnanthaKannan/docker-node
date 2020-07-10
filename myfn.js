@@ -1,29 +1,31 @@
 function applicationData() {
     return {
         "APPLICATION_NUMBER": 1234,
-        "cert": [{
-                "CERTIFICATE_NAME": "income",
-                "CERTIFICATE_NUMBER": "TN-10006"
-            }, {
-                "CERTIFICATE_NAME": "NoGraduate Certificate",
-                "CERTIFICATE_NUMBER": "TN-10001"
-            }, 
+        "cert": [
+            // {
+            //     "CERTIFICATE_NAME": "income",
+            //     "CERTIFICATE_NUMBER": "TN-10006"
+            // }, 
+            // {
+            //     "CERTIFICATE_NAME": "NoGraduate Certificate",
+            //     "CERTIFICATE_NUMBER": "TN-10001"
+            // }, 
             // {
             //     "CERTIFICATE_NAME": "community_certificate",
             //     "CERTIFICATE_NUMBER": "TN-10011"
             // },
-             {
-                "CERTIFICATE_NAME": "nativity_certificate",
-                "CERTIFICATE_NUMBER": "TN-10016"
-            },
-            {
-                "CERTIFICATE_NAME": "OBC_certificate",
-                "CERTIFICATE_NUMBER": "KL-10024"
-            },
-            {
-                "CERTIFICATE_NAME": "hsc",
-                "CERTIFICATE_NUMBER": "TN1234"
-            }
+            //  {
+            //     "CERTIFICATE_NAME": "nativity_certificate",
+            //     "CERTIFICATE_NUMBER": "TN-10016"
+            // },
+            // {
+            //     "CERTIFICATE_NAME": "OBC_certificate",
+            //     "CERTIFICATE_NUMBER": "KL-10024"
+            // },
+            // {
+            //     "CERTIFICATE_NAME": "hsc",
+            //     "CERTIFICATE_NUMBER": "TN1234"
+            // }
         ],
         "NAME": "Raj",
         "PARENT_NAME": "abc",
@@ -116,6 +118,7 @@ function nativity(nativity_cert_no) {
 }
 
 function first_graduate(nativity_cert_no) {
+    return{}
     return {
         SERVICENAME: 'First Graduate Certificate',
         APPLICANTNAME: 'Raj',
@@ -216,6 +219,7 @@ function first_graduate(nativity_cert_no) {
 }
 
 function obc(nativity_cert_no) {
+    // return {}
     return {
         SERVICENAME: 'OBC Certificate',
         APPLICANTNAME: 'Raj22',
@@ -273,7 +277,7 @@ function hsc(nativity_cert_no) {
         "DOB": '',
         "Community": '',
         "Religion": '',
-        "group_code": '',
+        "group_code": 'dsd',
         "Maths": '80',
         "physics": '80',
         "chemistry": '50',
