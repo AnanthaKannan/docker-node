@@ -165,7 +165,7 @@ class DoVerification {
         let result = await datafn.first_graduate(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         if(Object.keys(incomeData).length < 1) return {}
-        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE']
+        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE', 'DISTRICT']
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -222,7 +222,7 @@ class DoVerification {
         let result = await datafn.obc(obc_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         if(Object.keys(incomeData).length < 1) return {}
-        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'GENDER', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
+        const checkKeys = ['NAME', 'COMMUNITY', 'DISTRICT', 'PARENT_NAME', 'CASTE', 'PINCODE', 'RELIGION']
 
         // if the community is obc, then only need to check the OBC data is avaliable or not 
         if(applicationData.COMMUNITY && applicationData.COMMUNITY.trim().toLowerCase()  === 'obc'){
@@ -449,16 +449,16 @@ class DoVerification {
             
         if(key === 'NAME') return [anyOne, nativity_, first_graduate_, hsc_];
         if(key === 'PARENT_NAME') return [income_, nativity_, first_graduate_, anyOne];
-        if(key === 'DISTRICT') return [nativity_, income_, anyOne];
+        if(key === 'DISTRICT') return [nativity_, income_, first_graduate_, anyOne];
         if(key === 'STATE') return [nativity_];
         if(key === 'PARENT_OCCUPATION') return [income_];
         if(key === 'ANNUAL_INCOME') return [income_];
         if(key === 'NATIVITY') return [nativity_];
-        if(key === 'GENDER') return [anyOne, hsc_];
+        if(key === 'GENDER') return [community_, hsc_];
         if(key === 'NATIONALITY') return [nativity_];
         if(key === 'CASTE') return [anyOne];
         if(key === 'COMMUNITY') return [anyOne];
-        if(key === 'PINCODE') return [income_, nativity_, first_graduate_, hsc_, anyOne]
+        if(key === 'PINCODE') return [income_, nativity_, first_graduate_, anyOne]
         if(key === 'RELIGION') return [hsc_, anyOne]
 
         if(key === 'GROUP_CODE'

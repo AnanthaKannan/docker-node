@@ -2,14 +2,14 @@ function applicationData() {
     return {
         "APPLICATION_NUMBER": 1234,
         "cert": [
-            // {
-            //     "CERTIFICATE_NAME": "income",
-            //     "CERTIFICATE_NUMBER": "TN-10006"
-            // }, 
-            // {
-            //     "CERTIFICATE_NAME": "NoGraduate Certificate",
-            //     "CERTIFICATE_NUMBER": "TN-10001"
-            // }, 
+            {
+                "CERTIFICATE_NAME": "income",
+                "CERTIFICATE_NUMBER": "TN-10006"
+            }, 
+            {
+                "CERTIFICATE_NAME": "NoGraduate Certificate",
+                "CERTIFICATE_NUMBER": "TN-10001"
+            }, 
             // {
             //     "CERTIFICATE_NAME": "community_certificate",
             //     "CERTIFICATE_NUMBER": "TN-10011"
@@ -45,7 +45,7 @@ function applicationData() {
         "AADHAR": "dav5465435",
         "MOTHER_TONGUE": "jhacv",
         "ELIGIBILITY_TYPE": "bhba42",
-        "PARENT_OCCUPATION": "sbhjvbs",
+        "PARENT_OCCUPATION": "Private",
         "ANNUAL_INCOME": "1000000",
         "QUALIFYING_EXAM": "vdhjva",
         "NAME_OF_BOARD": "vjadvc",
@@ -71,9 +71,10 @@ function applicationData() {
 
 
 function income(nativity_cert_no) {
+    // return {}
     return {
         SERVICENAME: 'Income Certificate',
-        APPLICANTNAME: 'abc',
+        APPLICANTNAME: 'absc',
         FATHERHUSNAME: 'Guru',
         ADDRESS: 'Street -Other, Door/Building No.-44',
         VILLTOWN: 'Chennai',
@@ -118,7 +119,7 @@ function nativity(nativity_cert_no) {
 }
 
 function first_graduate(nativity_cert_no) {
-    return{}
+    // return{}
     return {
         SERVICENAME: 'First Graduate Certificate',
         APPLICANTNAME: 'Raj',
