@@ -42,6 +42,7 @@ function applicationData() {
         "RELIGION": "H/M/C",
         "COMMUNITY": "obc",
         "CASTE": "gja",
+        "OPTIONAL":"dvxv",
         "AADHAR": "dav5465435",
         "MOTHER_TONGUE": "jhacv",
         "ELIGIBILITY_TYPE": "bhba42",

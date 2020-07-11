@@ -2,11 +2,20 @@
 
 const datafn = require('./myfn')
 const DateDiff = require('date-diff');
+const date = new Date().toISOString().slice(0,10);
+const log4js = require("log4js");
+log4js.configure({
+  appenders: { cheese: { type: "file",filename: `${date}_verify.log` } },
+  categories: { default: { appenders: ["cheese"], level: "error" } }
+});
+const logger = log4js.getLogger("cheese");
 
 class DoVerification {
 
     async Verification(ctx, applicationData) {
         console.log('init Verification');
+        logger.error(applicationData);
+
         applicationData = JSON.parse(applicationData)
         const income_ = await this.verifyIncome(ctx, applicationData);
         const income_cert_no_key = Object.keys(income_)[0]  // TN123_INCOME
