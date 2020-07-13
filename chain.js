@@ -388,20 +388,21 @@ class DoVerification {
                 verified_flag = 'red'
             }
             else {
-                let remark = ''
+
                 verified_flag = 'amber'
+                let failed_case = '', empty_res_case = '', expired_case = '';
                 finalStatus.forEach((obj, index) => {
                     if (obj.Verification_result === 'failed')
-                        remark += `${key} doesn’t match against ${obj.verify} Certificate, `
+                        failed_case += `${obj.verify},`
                     if (obj.Verification_result === 'empty_res')
-                        remark += `${key} verification data could not complete hence ${obj.verify} data is not there, `
+                        empty_res_case = `${obj.verify},`
                     if(obj.Verification_result === 'expired')
-                        remark += `verification data could not complete hence ${obj.verify} certificate Expired, `
+                        expired_case = `${obj.verify},`
                 });
-
-                if (finalStatus.every((obj) => obj.Verification_result === 'empty_res') === true) 
-                    verified_flag = 'red'
-                
+                let remark = failed_case && `doesn’t match against ${failed_case.substr(0, failed_case.length-1)} Certificate.`;
+                remark += empty_res_case && `verification data could not complete hence  data is not there in ${empty_res_case.substr(0, empty_res_case.length -1)}.`
+                remark += expired_case && `verification data could not complete hence ${expired_case.substr(0, expired_case.length -1)} certificate Expired`
+               
                 verification_remarks = remark;
             }
 
