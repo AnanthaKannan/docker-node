@@ -75,7 +75,7 @@ function income(nativity_cert_no) {
     // return {}
     return {
         SERVICENAME: 'Income Certificate',
-        APPLICANTNAME: 'absc',
+        APPLICANTNAME: 'abc',
         FATHERHUSNAME: 'Guru',
         ADDRESS: 'Street -Other, Door/Building No.-44',
         VILLTOWN: 'Chennai',
@@ -87,7 +87,7 @@ function income(nativity_cert_no) {
         ISSUINGAUTHORITY: 'Deputy Tahsildar',
         AADHARNO: '747574363664',
         DATEOFISSUE: '18-05-2020',
-        DATEOFEXPIRY: '17-05-2021',
+        DATEOFEXPIRY: '12-07-2022',
         CERTIFICATENO: 'TN-10006',
         Created_at: "2020/02/07 11:46:33",
         ATTACHEMENT: 'http://14.192.18.150/stagging/DownloadAttachments?AppNo=iFBa+q0Q1KHU4dq9Z13dPg==',
@@ -99,7 +99,7 @@ function nativity(nativity_cert_no) {
     return {
         SERVICENAME: 'Nativity certificate',
         APPLICANTNAME: 'Gopal',
-        FATHERHUSNAME: 'Appa',
+        FATHERHUSNAME: 'abc',
         ADDRESS: 'Street -Street, Door/Building No.-23',
         VILLTOWN: 'Theni',
         TALUK: 'Aundipatti',

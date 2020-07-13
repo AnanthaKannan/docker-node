@@ -1,20 +1,11 @@
 // @ts-check
 
 const datafn = require('./myfn')
-const DateDiff = require('date-diff');
-const date = new Date().toISOString().slice(0,10);
-const log4js = require("log4js");
-log4js.configure({
-  appenders: { cheese: { type: "file",filename: `${date}_verify.log` } },
-  categories: { default: { appenders: ["cheese"], level: "error" } }
-});
-const logger = log4js.getLogger("cheese");
 
 class DoVerification {
 
     async Verification(ctx, applicationData) {
         console.log('init Verification');
-        logger.error(applicationData);
 
         applicationData = JSON.parse(applicationData)
         const income_ = await this.verifyIncome(ctx, applicationData);
@@ -115,6 +106,13 @@ class DoVerification {
         NativityData.NATIVITY = 'Tamil Nadu';
         const checkKeys = ['NAME', 'NATIONALITY', 'NATIVITY', 'STUDENT_STUDIED', 'DISTRICT', 'STATE', 
         'PARENT_NAME', 'PINCODE'] 
+        
+        // PARENT_NAME should equals to FATHERHUSNAME or mother MOTHERNAME
+        const PARENT_NAME = applicationData.PARENT_NAME;
+        if(PARENT_NAME === NativityData.MOTHERNAME)
+            NativityData.FATHERHUSNAME = NativityData.MOTHERNAME;
+        
+
         const verifyResult = await this.compare(checkKeys, applicationData, NativityData, 'nativity')
         verifyResult.Created_at = NativityData.Created_at;
         
@@ -150,10 +148,12 @@ class DoVerification {
         if(Object.keys(incomeData).length < 1) return {}
 
         const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'DISTRICT', 'PINCODE']
-        const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income')
-        verifyResult.Created_at = incomeData.Created_at
-        // return verifyResult
 
+        const isIncomeExpiry = this.isExpery(incomeData.DATEOFEXPIRY)
+        console.log(isIncomeExpiry)
+        const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income', !isIncomeExpiry)
+        verifyResult.Created_at = incomeData.Created_at
+       
         return { [income_cert_no]:verifyResult }
         // console.log(verifyResult)
     }   
@@ -174,7 +174,7 @@ class DoVerification {
         let result = await datafn.first_graduate(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         if(Object.keys(incomeData).length < 1) return {}
-        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE', 'DISTRICT']
+        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE', 'DISTRICT'];
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -279,14 +279,13 @@ class DoVerification {
 
 
 
-    async compare(checkKeys, applicationData, incomeData, from) {
+    async compare(checkKeys, applicationData, incomeData, from, isExpery=false) {
         let status = {}
         let failed = { Verification_result: 'failed' }
         const success = { Verification_result: 'success' }
-        // const empty_res = { Verification_result: 'empty_res' }
+        const expired = { Verification_result: 'expired' }
 
-        // if(Object.keys(incomeData).length < 1)
-        //     failed = empty_res
+
 
         checkKeys.forEach((checkKey) => {
             let incomeDataKey = checkKey;
@@ -327,7 +326,9 @@ class DoVerification {
             const applicationValue = applicationData[checkKey];
             // console.log(checkKey, incomeValue, applicationValue)
 
-            if (!incomeValue || !applicationValue)
+            if(isExpery)
+                status[checkKey] = expired
+            else if (!incomeValue || !applicationValue)
                 status[checkKey] = failed
             else {
                 if (incomeValue.toString().trim().toLowerCase() === applicationValue.toString().trim().toLowerCase())
@@ -377,6 +378,10 @@ class DoVerification {
                 verification_remarks = 'does not match any of the verification data.'
                 verified_flag = 'red'
             } 
+            else if (finalStatus.every((obj) => obj.Verification_result === 'expired') === true) {
+                verification_remarks = `verification data could not complete hence certificate Expired`
+                verified_flag = 'red'
+            } 
             else if (finalStatus.every((obj) => obj.Verification_result === 'empty_res') === true) {
                 verification_remarks = 'verification data could not complete hence data is not there'
                 verified_flag = 'red'
@@ -389,6 +394,8 @@ class DoVerification {
                         remark += `${key} doesn’t match against ${obj.verify} Certificate, `
                     if (obj.Verification_result === 'empty_res')
                         remark += `${key} verification data could not complete hence ${obj.verify} data is not there, `
+                    if(obj.Verification_result === 'expired')
+                        remark += `verification data could not complete hence ${obj.verify} certificate Expired, `
                 });
 
                 if (finalStatus.every((obj) => obj.Verification_result === 'empty_res') === true) 
@@ -412,13 +419,12 @@ class DoVerification {
 
      compareWith({applicationData, income, nativity, hsc, first_graduate, community, obc, isObc}, key){
 
-        
-
+    
         const income_ = { verify: 'income' }
         income_.Verification_result = income[key] ? income[key]['Verification_result']: 'failed';
         if(Object.keys(income).length < 1) income_.Verification_result = 'empty_res'
         if(!applicationData.cert.find((obj) => obj.CERTIFICATE_NAME === 'income'))
-            income_.Verification_result = 'empty_cert'
+            income_.Verification_result = 'empty_cert'        
 
         const nativity_ = { verify: 'nativity' }
         nativity_.Verification_result = nativity[key] ? nativity[key]['Verification_result'] : 'failed';
@@ -483,8 +489,33 @@ class DoVerification {
         if(key === 'PERMANENT_ADDRESS' || key === 'CIVIC_STATUS' || key === 'AADHAR') 
         return []
     }
+
+    isExpery(DATEOFEXPIRY){
+        try{
+      console.log('DATEOFEXPIRY', DATEOFEXPIRY);
+      if(!DATEOFEXPIRY) return false;
+      let split_date = DATEOFEXPIRY.split('-');
+      console.log(split_date)
+      const date= parseInt(split_date[0]) + 1, month = parseInt(split_date[1]) - 1, year = split_date[2];
+      const expiry_date = new Date(year, month, date);
+      const current_date = new Date()
+      const diff = Math.round((expiry_date - current_date)/(1000*60*60*24));
+      console.log(diff)
+      if(diff < 0)
+        return false
+      else return true
+        }
+        catch(e){
+          console.info(e);
+          return false;
+        }
+      }
 }
 
+
+
+
+  
 
 
 async function callData(){
