@@ -2,26 +2,26 @@ function applicationData() {
     return {
         "APPLICATION_NUMBER": 1234,
         "cert": [
-            {
-                "CERTIFICATE_NAME": "income",
-                "CERTIFICATE_NUMBER": "TN-10006"
-            }, 
-            {
-                "CERTIFICATE_NAME": "NoGraduate Certificate",
-                "CERTIFICATE_NUMBER": "TN-10001"
-            }, 
-            {
-                "CERTIFICATE_NAME": "community_certificate",
-                "CERTIFICATE_NUMBER": "TN-10011"
-            },
+            // {
+            //     "CERTIFICATE_NAME": "income",
+            //     "CERTIFICATE_NUMBER": "TN-10006"
+            // }, 
+            // {
+            //     "CERTIFICATE_NAME": "NoGraduate Certificate",
+            //     "CERTIFICATE_NUMBER": "TN-10001"
+            // }, 
+            // {
+            //     "CERTIFICATE_NAME": "community_certificate",
+            //     "CERTIFICATE_NUMBER": "TN-10011"
+            // },
             //  {
             //     "CERTIFICATE_NAME": "nativity_certificate",
             //     "CERTIFICATE_NUMBER": "TN-10016"
             // },
-            // {
-            //     "CERTIFICATE_NAME": "OBC_certificate",
-            //     "CERTIFICATE_NUMBER": "KL-10024"
-            // },
+            {
+                "CERTIFICATE_NAME": "OBC_certificate",
+                "CERTIFICATE_NUMBER": "KL-10024"
+            },
             // {
             //     "CERTIFICATE_NAME": "hsc",
             //     "CERTIFICATE_NUMBER": "TN1234"
@@ -237,7 +237,7 @@ function obc(nativity_cert_no) {
         ISSUINGAUTHORITY: 'Tahsildar',
         AADHARNO: '765768909876',
         DATEOFISSUE: '16-04-2020',
-        DATEOFEXPIRY: '31-03-2021',
+        DATEOFEXPIRY: '31-03-2020',
         CERTIFICATENO: 'KL-10024',
         Created_at: "2020/02/07 11:46:33",
         ATTACHEMENT: 'http://14.192.18.150/stagging/DownloadAttachments?AppNo=CmMseg0XCPCGmgiQRRM1XQ==',

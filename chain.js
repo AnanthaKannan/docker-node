@@ -240,7 +240,10 @@ class DoVerification {
             if(keys.length > 0)
                 incomeData.COMMUNITY = 'obc'
         }
-        const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'obc')
+
+        const isIncomeExpiry = this.isExpery(incomeData.DATEOFEXPIRY)
+        console.log(isIncomeExpiry)
+        const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'obc', !isIncomeExpiry)
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
         return { [obc_cert_no]:verifyResult }
