@@ -7,7 +7,8 @@ class DoVerification {
     async Verification(ctx, applicationData) {
         console.log('init Verification');
 
-        applicationData = JSON.parse(applicationData)
+        applicationData = JSON.parse(applicationData);
+        applicationData = this.dataValueUpdate(applicationData)
         const income_ = await this.verifyIncome(ctx, applicationData);
         const income_cert_no_key = Object.keys(income_)[0]  // TN123_INCOME
         let income = income_[income_cert_no_key] 
@@ -510,6 +511,35 @@ class DoVerification {
           return false;
         }
       }
+
+    dataValueUpdate(application_data){
+
+        if(application_data.NATIONALITY === 'in')
+            application_data.NATIONALITY = 'Indian';
+        if(application_data.STATE === 'tn')
+            application_data.STATE = 'Tamil Nadu';
+        if(application_data.GENDER){
+            if(application_data.GENDER === 'M')
+                application_data.GENDER = 'Male'
+            else if(application_data.GENDER === 'F')
+                application_data.GENDER = 'Female'
+        }
+        if(application_data.MEDIUM_OF_INSTRUCTION){
+            if(application_data.MEDIUM_OF_INSTRUCTION == 'en')
+                application_data.MEDIUM_OF_INSTRUCTION = 'english'
+            else(application_data.MEDIUM_OF_INSTRUCTION == 'tn')
+                application_data.MEDIUM_OF_INSTRUCTION = 'tamil'
+        }
+        if(application_data.RELIGION){
+            if(application_data.RELIGION === 'H')
+                application_data.RELIGION = 'Hindu'
+            else if(application_data.RELIGION === 'C')
+                application_data.RELIGION = 'Christian'
+            else if(application_data.RELIGION === 'M')
+                application_data.RELIGION = 'Muslim'
+        }
+    return application_data
+    }
 }
 
 

@@ -10,10 +10,10 @@ function applicationData() {
                 "CERTIFICATE_NAME": "NoGraduate Certificate",
                 "CERTIFICATE_NUMBER": "TN-10001"
             }, 
-            // {
-            //     "CERTIFICATE_NAME": "community_certificate",
-            //     "CERTIFICATE_NUMBER": "TN-10011"
-            // },
+            {
+                "CERTIFICATE_NAME": "community_certificate",
+                "CERTIFICATE_NUMBER": "TN-10011"
+            },
             //  {
             //     "CERTIFICATE_NAME": "nativity_certificate",
             //     "CERTIFICATE_NUMBER": "TN-10016"
@@ -39,7 +39,7 @@ function applicationData() {
         "GENDER": "male",
         "NATIONALITY": "Indian",
         "NATIVITY": "TN",
-        "RELIGION": "H/M/C",
+        "RELIGION": "H",
         "COMMUNITY": "obc",
         "CASTE": "gja",
         "OPTIONAL":"dvxv",
