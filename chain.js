@@ -369,22 +369,22 @@ class DoVerification {
 
             if(finalStatus.length < 1){
                 // verified_flag = verification_remarks = null
-                verification_remarks = 'verification data could not complete hence data is not there.'
+                verification_remarks = 'Verification data could not complete hence data is not there.'
                 verified_flag = 'red'
             }
             else if (finalStatus.every((obj) => obj.Verification_result === 'success') === true) {
-                verification_remarks = 'all certificate successfully matched'
+                verification_remarks = 'All certificate successfully matched'
                 verified_flag = 'green'
             } else if (finalStatus.every((obj) => obj.Verification_result === 'failed') === true) {
-                verification_remarks = 'does not match any of the verification data.'
+                verification_remarks = 'Doesn’t match any of the verification data.'
                 verified_flag = 'red'
             } 
             else if (finalStatus.every((obj) => obj.Verification_result === 'expired') === true) {
-                verification_remarks = `verification data could not complete hence certificate Expired`
+                verification_remarks = `Verification data could not complete hence certificate Expired`
                 verified_flag = 'red'
             } 
             else if (finalStatus.every((obj) => obj.Verification_result === 'empty_res') === true) {
-                verification_remarks = 'verification data could not complete hence data is not there'
+                verification_remarks = 'Verification data could not complete hence data is not there'
                 verified_flag = 'red'
             }
             else {
@@ -399,9 +399,9 @@ class DoVerification {
                     if(obj.Verification_result === 'expired')
                         expired_case = `${obj.verify},`
                 });
-                let remark = failed_case && `doesn’t match against ${failed_case.substr(0, failed_case.length-1)} Certificate.`;
-                remark += empty_res_case && `verification data could not complete hence  data is not there in ${empty_res_case.substr(0, empty_res_case.length -1)}.`
-                remark += expired_case && `verification data could not complete hence ${expired_case.substr(0, expired_case.length -1)} certificate Expired`
+                let remark = failed_case && `Doesn’t match against ${failed_case.substr(0, failed_case.length-1)} Certificate. `;
+                remark += empty_res_case && `Verification data could not complete hence  data is not there in ${empty_res_case.substr(0, empty_res_case.length -1)}. `
+                remark += expired_case && `Verification data could not complete hence ${expired_case.substr(0, expired_case.length -1)} certificate Expired. `
                
                 verification_remarks = remark;
             }
