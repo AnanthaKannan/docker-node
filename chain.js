@@ -269,6 +269,7 @@ class DoVerification {
         'OPTIONAL', 'QUALIFICATION_EXAMINATION', 'BOARD_OD_EXAMINATION', 
         'GROUP_CODE', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED', 'MATHS_MARKS_OBTAINED']
 
+        incomeData = this.dataValueUpdate(incomeData, 'hsc')
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'hsc')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -319,6 +320,7 @@ class DoVerification {
                 else if(checkKey === 'PHYSICS_MARKS_OBTAINED') incomeDataKey = 'physics';
                 else if(checkKey === 'CHEMISTRY_MARKS_OBTAINED') incomeDataKey = 'chemistry';
                 else if(checkKey === 'MATHS_MARKS_OBTAINED') incomeDataKey = 'Maths';
+                else if(checkKey === 'GENDER') incomeDataKey = 'Gender'; 
             }
 
              else if (from === 'community' || from === 'obc') {
@@ -516,34 +518,40 @@ class DoVerification {
         }
       }
 
-    dataValueUpdate(application_data){
+    dataValueUpdate(data, from=null){
+        let NATIONALITY = 'NATIONALITY',STATE='STATE', GENDER = 'GENDER', MEDIUM_OF_INSTRUCTION= 'MEDIUM_OF_INSTRUCTION', RELIGION='RELIGION';
 
-        if(application_data.NATIONALITY === 'in')
-            application_data.NATIONALITY = 'Indian';
-        if(application_data.STATE === 'tn')
-            application_data.STATE = 'Tamil Nadu';
-        if(application_data.GENDER){
-            if(application_data.GENDER === 'M')
-                application_data.GENDER = 'Male'
-            else if(application_data.GENDER === 'F')
-                application_data.GENDER = 'Female'
+        if(from === 'hsc')
+            NATIONALITY = 'NATIONALITY',STATE='STATE', GENDER = 'Gender', MEDIUM_OF_INSTRUCTION= 'Medium_of_instruction', RELIGION='Religion';
+
+        if(data[NATIONALITY] === 'in')
+            data[NATIONALITY] = 'Indian';
+        if(data[STATE] === 'tn')
+            data[STATE] = 'Tamil Nadu';
+        if(data[GENDER]){
+            if(data[GENDER] === 'M')
+                data[GENDER] = 'Male'
+            else if(data[GENDER] === 'F')
+                data[GENDER] = 'Female'
         }
-        if(application_data.MEDIUM_OF_INSTRUCTION){
-            if(application_data.MEDIUM_OF_INSTRUCTION == 'en')
-                application_data.MEDIUM_OF_INSTRUCTION = 'english'
-            else(application_data.MEDIUM_OF_INSTRUCTION == 'tn')
-                application_data.MEDIUM_OF_INSTRUCTION = 'tamil'
+        if(data[MEDIUM_OF_INSTRUCTION]){
+            if(data[MEDIUM_OF_INSTRUCTION] == 'en')
+                data[MEDIUM_OF_INSTRUCTION] = 'english'
+            else(data[MEDIUM_OF_INSTRUCTION] == 'tn')
+                data[MEDIUM_OF_INSTRUCTION] = 'tamil'
         }
-        if(application_data.RELIGION){
-            if(application_data.RELIGION === 'H')
-                application_data.RELIGION = 'Hindu'
-            else if(application_data.RELIGION === 'C')
-                application_data.RELIGION = 'Christian'
-            else if(application_data.RELIGION === 'M')
-                application_data.RELIGION = 'Muslim'
+        if(data[RELIGION]){
+            if(data[RELIGION] === 'H')
+                data[RELIGION] = 'Hindu'
+            else if(data[RELIGION] === 'C')
+                data[RELIGION] = 'Christian'
+            else if(data[RELIGION] === 'M')
+                data[RELIGION] = 'Muslim'
         }
-    return application_data
+    return data
     }
+
+
 }
 
 

@@ -22,10 +22,10 @@ function applicationData() {
                 "CERTIFICATE_NAME": "OBC_certificate",
                 "CERTIFICATE_NUMBER": "KL-10024"
             },
-            // {
-            //     "CERTIFICATE_NAME": "hsc",
-            //     "CERTIFICATE_NUMBER": "TN1234"
-            // }
+            {
+                "CERTIFICATE_NAME": "hsc",
+                "CERTIFICATE_NUMBER": "TN1234"
+            }
         ],
         "NAME": "Raj",
         "PARENT_NAME": "abc",
@@ -237,7 +237,7 @@ function obc(nativity_cert_no) {
         ISSUINGAUTHORITY: 'Tahsildar',
         AADHARNO: '765768909876',
         DATEOFISSUE: '16-04-2020',
-        DATEOFEXPIRY: '31-03-2020',
+        DATEOFEXPIRY: '31-03-2021',
         CERTIFICATENO: 'KL-10024',
         Created_at: "2020/02/07 11:46:33",
         ATTACHEMENT: 'http://14.192.18.150/stagging/DownloadAttachments?AppNo=CmMseg0XCPCGmgiQRRM1XQ==',
@@ -285,7 +285,8 @@ function hsc(nativity_cert_no) {
         "chemistry": '50',
         "docType": "hsc",
         CERTIFICATENO: 'TN1234',
-        "Created_at": ''
+        "Created_at": '',
+        "Gender":'M'
     }
 }
 module.exports = {
