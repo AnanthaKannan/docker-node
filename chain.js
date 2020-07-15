@@ -149,7 +149,8 @@ class DoVerification {
         if(Object.keys(incomeData).length < 1) return {}
 
         const checkKeys = ['PARENT_NAME', 'PARENT_OCCUPATION', 'ANNUAL_INCOME', 'DISTRICT', 'PINCODE']
-
+        
+        // check the certificate expery or not
         const isIncomeExpiry = this.isExpery(incomeData.DATEOFEXPIRY)
         console.log(isIncomeExpiry)
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income', !isIncomeExpiry)
@@ -175,7 +176,7 @@ class DoVerification {
         let result = await datafn.first_graduate(first_graduate_cert_no) //await ctx.stub.invokeChaincode(CC_NAME, ['checkAvailability', 'TN12345_income']);
         let incomeData = result
         if(Object.keys(incomeData).length < 1) return {}
-        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE', 'DISTRICT'];
+        const checkKeys = ['NAME','PARENT_NAME', 'PINCODE', 'DISTRICT', 'FIRST_GRADUATE_SCHOLARSHIP'];
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'first_graduate')
         verifyResult.Created_at = incomeData.Created_at
         // return verifyResult
@@ -357,6 +358,7 @@ class DoVerification {
         'MATHS_MARKS_OBTAINED', 'PHYSICS_MARKS_OBTAINED', 'CHEMISTRY_MARKS_OBTAINED',
         'PERMANENT_ADDRESS', 'CIVIC_STATUS', 'AADHAR',
         'YEAR_OF_PASSING', 'OPTIONAL', 'QUALIFICATION_EXAMINATION', 'BOARD_OD_EXAMINATION',
+        'FIRST_GRADUATE_SCHOLARSHIP'
         ]
 
 
@@ -482,6 +484,7 @@ class DoVerification {
         if(key === 'COMMUNITY') return [anyOne];
         if(key === 'PINCODE') return [income_, nativity_, first_graduate_, anyOne]
         if(key === 'RELIGION') return [hsc_, anyOne]
+        if(key === 'FIRST_GRADUATE_SCHOLARSHIP') return[first_graduate_]
 
         if(key === 'GROUP_CODE'
         || key === 'MATHS_MARKS_OBTAINED'

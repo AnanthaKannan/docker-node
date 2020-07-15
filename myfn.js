@@ -6,10 +6,10 @@ function applicationData() {
             //     "CERTIFICATE_NAME": "income",
             //     "CERTIFICATE_NUMBER": "TN-10006"
             // }, 
-            // {
-            //     "CERTIFICATE_NAME": "NoGraduate Certificate",
-            //     "CERTIFICATE_NUMBER": "TN-10001"
-            // }, 
+            {
+                "CERTIFICATE_NAME": "NoGraduate Certificate",
+                "CERTIFICATE_NUMBER": "TN-10001"
+            }, 
             // {
             //     "CERTIFICATE_NAME": "community_certificate",
             //     "CERTIFICATE_NUMBER": "TN-10011"
@@ -64,7 +64,7 @@ function applicationData() {
         "PRACTICAL_I_MARKS_OBTAINED": "90",
         "PRACTICAL_II_MARKS_OBTAINED": "90",
         'STUDIED_IN_TAMILNADU':'yes',
-        'FIRST_GRADUATE_SCHOLARSHIP':'No',
+        'FIRST_GRADUATE_SCHOLARSHIP':'yes',
         "request_id": "001"
 
     }
@@ -298,3 +298,44 @@ module.exports = {
     community,
     hsc
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// peer1.cadv.cvs.org	peer0.org1.example.com
+// peer1.tnega.cvs.org	peer0.org2.example.com
+// peer2.tnega.cvs.org	peer1.org2.example.com
+// peer1.sed.cvs.org	peer0.org3.example.com
+
+// orderer1.cvs.org	orderer.example.com
+// orderer2.cvs.org	orderer2.example.com
+// orderer3.cvs.org	orderer3.example.com
+
+// ca.cadv.cvs.org		ca.org1.example.com
+// ca.tnega.cvs.org	ca.org2.example.com
+// ca.sed.cvs.org		ca.org3.example.com
+
+
+// Org1	CADV
+// Org2	TNEGA
+// Org3	SED
+
+
+// Org1MSP		CadvMSP
+// Org2MSP		TnegaMSP
+// Org3MSP		SedMSP
