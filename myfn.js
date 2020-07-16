@@ -14,14 +14,14 @@ function applicationData() {
             //     "CERTIFICATE_NAME": "community_certificate",
             //     "CERTIFICATE_NUMBER": "TN-10011"
             // },
-            //  {
-            //     "CERTIFICATE_NAME": "nativity_certificate",
-            //     "CERTIFICATE_NUMBER": "TN-10016"
-            // },
-            {
-                "CERTIFICATE_NAME": "OBC_certificate",
-                "CERTIFICATE_NUMBER": "KL-10024"
+             {
+                "CERTIFICATE_NAME": "nativity_certificate",
+                "CERTIFICATE_NUMBER": "TN-10016"
             },
+            // {
+            //     "CERTIFICATE_NAME": "OBC_certificate",
+            //     "CERTIFICATE_NUMBER": "KL-10024"
+            // },
             {
                 "CERTIFICATE_NAME": "hsc",
                 "CERTIFICATE_NUMBER": "TN1234"
@@ -47,7 +47,7 @@ function applicationData() {
         "MOTHER_TONGUE": "jhacv",
         "ELIGIBILITY_TYPE": "bhba42",
         "PARENT_OCCUPATION": "Private",
-        "ANNUAL_INCOME": "1000000",
+        "ANNUAL_INCOME": "1200000",
         "QUALIFYING_EXAM": "vdhjva",
         "NAME_OF_BOARD": "vjadvc",
         "HSC_REGISTER_NO": "gd3663",
@@ -87,7 +87,7 @@ function income(nativity_cert_no) {
         ISSUINGAUTHORITY: 'Deputy Tahsildar',
         AADHARNO: '747574363664',
         DATEOFISSUE: '18-05-2020',
-        DATEOFEXPIRY: '12-07-2020',
+        DATEOFEXPIRY: '12-07-2021',
         CERTIFICATENO: 'TN-10006',
         Created_at: "2020/02/07 11:46:33",
         ATTACHEMENT: 'http://14.192.18.150/stagging/DownloadAttachments?AppNo=iFBa+q0Q1KHU4dq9Z13dPg==',

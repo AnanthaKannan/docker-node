@@ -153,6 +153,10 @@ class DoVerification {
         // check the certificate expery or not
         const isIncomeExpiry = this.isExpery(incomeData.DATEOFEXPIRY)
         console.log(isIncomeExpiry)
+        
+        if(incomeData.ANNUALINCOME)
+            incomeData.ANNUALINCOME = Math.round(parseInt(incomeData.ANNUALINCOME)).toString()
+
         const verifyResult = await this.compare(checkKeys, applicationData, incomeData, 'income', !isIncomeExpiry)
         verifyResult.Created_at = incomeData.Created_at
        
